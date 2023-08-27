@@ -23,3 +23,16 @@ php artisan jwt:secret
 *) Создал базу данных "social_network_1", подключился, накатил миграции, получил данные из таблицы
 
 *) Протестировал авторизацию через api
+
+3. Создал 5 моделей + миграции к этим моделям
+>php artisan make:Model Post -m
+ 
+>php artisan make:Model PostImage -m
+
+>php artisan make:Model LikedPost -m
+
+>php artisan make:Model SubscriberFollowing -m
+
+>php artisan make:Model Comment -m
+
++ заполнил созданные миграции, накатил
