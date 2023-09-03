@@ -18,6 +18,7 @@ class CreatePostImagesTable extends Migration
         Schema::create('post_images', function (Blueprint $table) {
             $table->id();
             $table->string('path');
+            $table->boolean('active')->default(false);
 
             $table->foreignId('post_id')->index()->nullable()->constrained('posts');
             $table->foreignId('user_id')->index()->nullable()->constrained('users');

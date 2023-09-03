@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FruitController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostImageController;
 use App\Http\Controllers\User\RegistrationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,4 +43,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 // роуты которые будут доступны только авторизованным пользователям
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/fruits', [FruitController::class, 'getFruits']);
+
+    Route::post('/post/create', [PostController::class,'createPost']);
+    Route::post('/post/image', [PostImageController::class,'saveImage']);
 });
