@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
+    public function getPosts()
+    {
+        $posts = Post::where('user_id', auth()->id())->latest()->get();
+        return PostResource::collection($posts);
+    }
+
     public function createPost(StoreRequest $request)
     {
         // берём данные из запроса, без шляпы и воды

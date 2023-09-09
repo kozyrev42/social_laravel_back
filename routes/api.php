@@ -44,6 +44,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/fruits', [FruitController::class, 'getFruits']);
 
+    Route::get('/posts', [PostController::class, 'getPosts']);
     Route::post('/post/create', [PostController::class,'createPost']);
     Route::post('/post/image', [PostImageController::class,'saveImage']);
 });
