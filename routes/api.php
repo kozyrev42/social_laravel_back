@@ -6,6 +6,7 @@ use App\Http\Controllers\FruitController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostImageController;
 use App\Http\Controllers\User\RegistrationController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,4 +48,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/posts', [PostController::class, 'getPosts']);
     Route::post('/post/create', [PostController::class,'createPost']);
     Route::post('/post/image', [PostImageController::class,'saveImage']);
+
+    Route::get('/users', [UserController::class, 'getUsers']);
 });
