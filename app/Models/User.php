@@ -66,4 +66,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    // можно получить все посты объекта User вызвав: $user->posts
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'id')->latest();
+    }
 }

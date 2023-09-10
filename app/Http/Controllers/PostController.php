@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    public function getPosts()
+    public function getPostsAuth()
     {
         $posts = Post::where('user_id', auth()->id())->latest()->get();
         return PostResource::collection($posts);
