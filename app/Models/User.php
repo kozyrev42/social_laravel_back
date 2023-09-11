@@ -72,4 +72,13 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Post::class, 'user_id', 'id')->latest();
     }
+
+    // метод followings() возвращает коллекцию пользователей, на которых подписан данный пользователь
+    // связь между моделью User и ее самой, через промежуточную таблицу 'subscriber_followings'
+    // 'subscriber_id' - кто подписан/ это подписчик
+    // 'followings_id' - на кого подписан Подписчик
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'subscriber_followings', 'subscriber_id', 'followings_id');
+    }
 }
