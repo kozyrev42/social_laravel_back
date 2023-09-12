@@ -55,4 +55,14 @@ class UserController extends Controller
         $data['is_followed'] = count($res['attached']) > 0;
         return $data;
     }
+
+    public function followingPost()
+    {
+        // получаем ID, на кого подписан аутентифицированный
+        $followingIds = auth()->user()->followings()->pluck('followings_id')->toArray();
+
+        $posts = Post::whereIn('user_id', $followingIds)->latest()->get();
+
+        return PostResource::collection($posts);
+    }
 }
