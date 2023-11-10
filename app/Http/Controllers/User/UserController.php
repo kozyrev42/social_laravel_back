@@ -27,8 +27,9 @@ class UserController extends Controller
             ->toArray();
 
         foreach ($users as $user) {
-            //  проверяет, находится ли ID текущего пользователя $user в списке followingIds
+            //  проверяем, находится ли ID итеративного пользователя $user в списке followingIds
             if (in_array($user->id, $followingIds)) {
+                // если есть, условие true, значит аутентифицированный подписан на итеративного $user, устанавливаем флаг
                 $user->is_followed = true;
             }
         }
@@ -59,8 +60,11 @@ class UserController extends Controller
     public function followingPost()
     {
         // получаем ID, на кого подписан аутентифицированный
+        // pluck('followings_id') извлекает все значения столбца followings_id из результатов запроса, на которых подписан текущий пользователь
         $followingIds = auth()->user()->followings()->pluck('followings_id')->toArray();
 
+        // получаем все посты, где столбец user_id содержит значения, которые находятся в массиве $followingIds
+        // упорядочивает выбранные записи в обратном порядке по дате создания, самые новые посты будут первыми в результате запроса
         $posts = Post::whereIn('user_id', $followingIds)->latest()->get();
 
         return PostResource::collection($posts);

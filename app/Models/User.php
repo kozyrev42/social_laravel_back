@@ -81,4 +81,15 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(User::class, 'subscriber_followings', 'subscriber_id', 'followings_id');
     }
+
+    /**
+     * Метод likedPosts() возвращает коллекцию постов, которые были "лайкнуты" данным пользователем.
+     * Эта связь между моделью User и моделью Post проходит через промежуточную таблицу 'liked_posts'.
+     * 'user_id' - идентификатор пользователя, который поставил "лайк" посту
+     * 'post_id' - идентификатор поста, который был "лайкнут" пользователем
+     */ 
+    public function likedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'liked_posts', 'user_id', 'post_id');
+    }
 }

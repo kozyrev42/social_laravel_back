@@ -6,6 +6,7 @@ use App\Http\Requests\Post\StoreRequest;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
 use App\Models\PostImage;
+use App\Models\LikedPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,19 @@ class PostController extends Controller
     public function getPostsAuth()
     {
         $posts = Post::where('user_id', auth()->id())->latest()->get();
+
+        $likedPostIds = LikedPost::where('user_id', auth()->id())
+            ->pluck('post_id')
+            ->toArray();
+
+        foreach ($posts as $post) {
+            //  проверяем, находится ли ID итеративного 
+            if (in_array($post->id, $likedPostIds)) {
+                // если есть, условие true, значит 
+                $post->is_liked = true;
+            }
+        }
+
         return PostResource::collection($posts);
     }
 
@@ -62,5 +76,28 @@ class PostController extends Controller
             'active' => true,
             'post_id' => $post->id
         ]);
+    }
+
+    /**
+     * Метод toggleLike() добавляет или удаляет "лайк" текущего аутентифицированного пользователя к указанному посту.
+     * Использует связь likedPosts() для управления отношением "лайка" между пользователем и постом.
+     * Возвращает информацию о том, был ли поставлен "лайк" (true) или удален (false).
+     *
+     * @param  Post  $post  Пост, к которому нужно добавить или удалить "лайк".
+     * @return array Массив с ключом 'is_liked', который указывает, был ли поставлен "лайк" (true) или удален (false).
+     */
+    public function toggleLike(Post $post)
+    {
+        // Вызываем метод toggle() на связи likedPosts() для добавления или удаления "лайка" к посту
+        $res = auth()->user()->likedPosts()->toggle($post->id);
+
+        // Если count($res['attached']) > 0, это означает, что "лайк" был только что поставлен, поэтому is_liked устанавливается в true
+        // В противном случае "лайк" был удален, и is_liked устанавливается в false
+        $data['is_liked'] = count($res['attached']) > 0;
+
+        // получаем юзеров которые лайкнули, считаем
+        $data['likes_count'] = $post->likedUsers->count();
+
+        return $data;
     }
 }

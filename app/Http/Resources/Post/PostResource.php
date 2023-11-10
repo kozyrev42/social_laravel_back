@@ -16,11 +16,16 @@ class PostResource extends JsonResource
     {
         $url = isset($this->image) ? $this->image->url : null;
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
             'image_url' => $url,
             // будет возвращатся количество времени с момента публикации
-            'date' => $this->created_at->diffForHumans()
+            'date' => $this->created_at->diffForHumans(),
+            'is_liked' => $this->is_liked ?? false,
+
+            // по отношению из модели, получаем юзеров которые лайкнули, считаем
+            'likes_coutn' => $this->likedUsers->count() ?? false
         ];
     }
 }

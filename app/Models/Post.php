@@ -23,4 +23,17 @@ class Post extends Model
         // каждый Post может иметь только одно изображение PostImage
         return $this->hasOne(PostImage::class, 'post_id', 'id');
     }
+
+    /**
+     * отношение позволяет получить коллекцию пользователей, которые "лайкнули" данный пост.
+     * Используется промежуточная таблица 'liked_posts', где 'post_id' и 'user_id'
+     * связывают записи в таблицах 'posts' и 'users' соответственно.
+     * 
+     * Пример использования: $post->likedUsers для получения коллекции пользователей,
+     * которые лайкнули пост с идентификатором $post->id.
+     */
+    public function likedUsers()
+    {
+        return $this->belongsToMany(User::class, 'liked_posts', 'post_id', 'user_id');
+    }
 }
