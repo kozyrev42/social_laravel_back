@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Post\PostResource;
 use App\Http\Resources\User\UserResource;
+use App\Models\LikedPost;
 use App\Models\Post;
 use App\Models\SubscriberFollowing;
 use App\Models\User;
@@ -41,6 +42,10 @@ class UserController extends Controller
     {
         // получаем посты, через отношение Модели User
         $posts = $user->posts;
+
+        // полученные посты, отдаём проставить флаг, если был поставлен лайк аутентифицированным
+        $posts = $this->prepareLikedPosts($posts);
+
         return PostResource::collection($posts);
     }
 
@@ -67,6 +72,27 @@ class UserController extends Controller
         // упорядочивает выбранные записи в обратном порядке по дате создания, самые новые посты будут первыми в результате запроса
         $posts = Post::whereIn('user_id', $followingIds)->latest()->get();
 
+        // полученные посты, отдаём проставить флаг, если был поставлен лайк аутентифицированным
+        $posts = $this->prepareLikedPosts($posts);
+
         return PostResource::collection($posts);
+    }
+
+    // метод проставит флаг, тем постам, которые были пролайкнуты аутентифицированным
+    private function prepareLikedPosts($posts)
+    {
+        $likedPostIds = LikedPost::where('user_id', auth()->id())
+            ->pluck('post_id')
+            ->toArray();
+
+        foreach ($posts as $post) {
+            //  проверяем, находится ли ID итеративного
+            if (in_array($post->id, $likedPostIds)) {
+                // если есть, условие true, значит
+                $post->is_liked = true;
+            }
+        }
+
+        return $posts;
     }
 }
