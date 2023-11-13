@@ -68,12 +68,21 @@ class UserController extends Controller
         // pluck('followings_id') извлекает все значения столбца followings_id из результатов запроса, на которых подписан текущий пользователь
         $followingIds = auth()->user()->followings()->pluck('followings_id')->toArray();
 
+        // получаем id постов, которые лайкнул аутентифицированный
+        $likedPostIds = LikedPost::where('user_id', auth()->id())
+            ->pluck('post_id')
+            ->toArray();
+
         // получаем все посты, где столбец user_id содержит значения, которые находятся в массиве $followingIds
+        // посты должны быть не пролайкнуты; если пост пролайкнут, то в выборку результирующего $posts не попадет
         // упорядочивает выбранные записи в обратном порядке по дате создания, самые новые посты будут первыми в результате запроса
-        $posts = Post::whereIn('user_id', $followingIds)->latest()->get();
+        $posts = Post::whereIn('user_id', $followingIds)
+            ->whereNotIn('id', $likedPostIds)
+            ->latest()
+            ->get();
 
         // полученные посты, отдаём проставить флаг, если был поставлен лайк аутентифицированным
-        $posts = $this->prepareLikedPosts($posts);
+        //$posts = $this->prepareLikedPosts($posts);
 
         return PostResource::collection($posts);
     }
