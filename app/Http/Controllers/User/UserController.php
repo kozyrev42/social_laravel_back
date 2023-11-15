@@ -41,7 +41,9 @@ class UserController extends Controller
     public function getPostsUser(User $user)
     {
         // получаем посты, через отношение Модели User
-        $posts = $user->posts;
+        $posts = $user->posts()
+            ->withCount('repostedByPosts') // считаем количество постов, которые были созданы как репост данного оригинального поста
+            ->get();
 
         // полученные посты, отдаём проставить флаг, если был поставлен лайк аутентифицированным
         $posts = $this->prepareLikedPosts($posts);
@@ -78,6 +80,7 @@ class UserController extends Controller
         // упорядочивает выбранные записи в обратном порядке по дате создания, самые новые посты будут первыми в результате запроса
         $posts = Post::whereIn('user_id', $followingIds)
             ->whereNotIn('id', $likedPostIds)
+            ->withCount('repostedByPosts') // считаем количество постов, которые были созданы как репост данного оригинального поста
             ->latest()
             ->get();
 

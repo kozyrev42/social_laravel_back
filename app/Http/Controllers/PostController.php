@@ -14,7 +14,11 @@ class PostController extends Controller
 {
     public function getPostsAuth()
     {
-        $posts = Post::where('user_id', auth()->id())->latest()->get();
+        //
+        $posts = Post::where('user_id', auth()->id())
+            ->withCount('repostedByPosts') // считаем количество постов, которые были созданы как репост данного оригинального поста
+            ->latest()
+            ->get();
 
         $likedPostIds = LikedPost::where('user_id', auth()->id())
             ->pluck('post_id')
