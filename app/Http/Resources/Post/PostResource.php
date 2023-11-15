@@ -25,7 +25,10 @@ class PostResource extends JsonResource
             'is_liked' => $this->is_liked ?? false,
 
             // по отношению из модели, получаем юзеров которые лайкнули, считаем
-            'likes_count' => $this->likedUsers->count() ?? false
+            'likes_count' => $this->likedUsers->count() ?? false,
+
+            // по отношению получаем оригинальный пост, текущего репоста
+            'reposted_post' => new RepostedPostResource($this->repostedPost)
         ];
     }
 }

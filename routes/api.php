@@ -49,6 +49,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('/post/create', [PostController::class,'createPost']);
     Route::post('/post/image', [PostImageController::class,'saveImage']);
     Route::get('/posts/{post}/toggle_like', [PostController::class, 'toggleLike']);
+    Route::post('/posts/{post}/repost', [PostController::class, 'repost']);
 
     Route::get('/users', [UserController::class, 'getUsers']);
     Route::get('/users/{user}/posts', [UserController::class, 'getPostsUser']);

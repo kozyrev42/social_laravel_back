@@ -21,9 +21,9 @@ class PostController extends Controller
             ->toArray();
 
         foreach ($posts as $post) {
-            //  проверяем, находится ли ID итеративного 
+            //  проверяем, находится ли ID итеративного
             if (in_array($post->id, $likedPostIds)) {
-                // если есть, условие true, значит 
+                // если есть, условие true, значит
                 $post->is_liked = true;
             }
         }
@@ -99,5 +99,16 @@ class PostController extends Controller
         $data['likes_count'] = $post->likedUsers->count();
 
         return $data;
+    }
+
+    public function repost(Request $request, Post $post)
+    {
+        $data = $request->all();
+
+        $data['user_id'] = auth()->id();
+        $data['reposted_id'] = $post->id;
+
+        $repost = Post::create($data);
+        return $repost;
     }
 }
