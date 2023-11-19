@@ -32,6 +32,9 @@ class PostResource extends JsonResource
 
             //
             'reposted_by_posts_count' => $this->reposted_by_posts_count,
+
+            // считаем количество комментариев у поста
+            'comments_count' => $this->comments->count(),
         ];
     }
 }

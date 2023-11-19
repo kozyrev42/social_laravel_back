@@ -79,4 +79,11 @@ class Post extends Model
     {
         return $this->hasMany(Post::class, 'reposted_id', 'id');
     }
+
+    // получаем много комментариев у одного поста
+    // каждый комментарий имеет 'post_id'
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'post_id', 'id');
+    }
 }
