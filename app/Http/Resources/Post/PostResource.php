@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Post;
 
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
@@ -35,6 +36,9 @@ class PostResource extends JsonResource
 
             // считаем количество комментариев у поста
             'comments_count' => $this->comments->count(),
+
+            // получаем который создал пост
+            'user' => new UserResource($this->user)
         ];
     }
 }

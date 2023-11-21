@@ -15,7 +15,7 @@ class Post extends Model
     // при загрузке модели Post, связанная модель PostImage (то есть изображение)
     // будет автоматически загружена вместе с ней. Это называется "жадной загрузкой" (eager loading)
     // и служит для оптимизации количества запросов к базе данных.
-    protected $with = ['image', 'likedUsers', 'repostedPost'];
+    protected $with = ['image', 'likedUsers', 'repostedPost', 'user'];
 
     // определяет отношение к модели PostImage
     public function image()
@@ -85,5 +85,11 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class, 'post_id', 'id');
+    }
+
+    // каждый пост имеет 'user_id', по нему мы и получим юзера который создал пост
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }
