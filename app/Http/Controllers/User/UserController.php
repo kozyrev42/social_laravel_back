@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Post\StatisticsRequest;
 use App\Http\Resources\Post\PostResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\LikedPost;
@@ -106,5 +107,30 @@ class UserController extends Controller
         }
 
         return $posts;
+    }
+
+    public function getStatistics(StatisticsRequest $request)
+    {
+        $data = $request->validated();
+
+        // если 'user_id' прилетел - то расчет для него, иначе расчет для аутентифицированного
+        $userId = isset($data['user_id']) ? $data['user_id'] : auth()->id();
+
+        $result = [];
+
+        // подсчет подписчиков юзера
+        $result['subscribers_count'] = SubscriberFollowing::where('followings_id', $userId)->count();
+
+        // подсчет на кого подписан юзер
+        $result['followings_count'] = SubscriberFollowing::where('subscriber_id', $userId)->count();
+
+        // подсчет лайков
+        $result['likes_count'] = LikedPost::where('user_id', $userId)->count();
+
+        // подсчет постов юзера
+        $postIds = Post::where('user_id', $userId)->get('id')->pluck('id')->toArray();
+        $result['posts_count'] = count($postIds);
+
+        return response()->json(['data' => $result]);
     }
 }

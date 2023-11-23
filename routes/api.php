@@ -58,5 +58,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/users/{user}/posts', [UserController::class, 'getPostsUser']);
     Route::get('/users/{user}/toggle_following', [UserController::class, 'toggleFollowing']);
     Route::get('/users/following_posts', [UserController::class, 'followingPost']);
+    Route::post('/users/stats', [UserController::class, 'getStatistics']);
 
 });
