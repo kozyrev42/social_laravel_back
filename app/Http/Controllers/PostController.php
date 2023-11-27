@@ -102,6 +102,10 @@ class PostController extends Controller
         // В противном случае "лайк" был удален, и is_liked устанавливается в false
         $data['is_liked'] = count($res['attached']) > 0;
 
+        // Метод toggle может не сразу обновлять счетчик лайков в связанной модели.
+        // Перезагрузить модель Post перед подсчетом лайков:
+        $post->refresh();
+
         // получаем юзеров которые лайкнули, считаем
         $data['likes_count'] = $post->likedUsers->count();
 
